@@ -232,7 +232,7 @@ const CheckoutForm = () => {
                     </div>
                     <div className="ml-3 text-sm">
                       <label htmlFor="agreeToTerms" className="font-medium text-gray-700">
-                        I agree to the <Link to="/terms" className="text-blue-600 hover:text-blue-800">Terms of Service</Link> and <Link to="/privacy" className=\"text-blue-600 hover:text-blue-800">Privacy Policy</Link> *
+                        I agree to the <Link to="/terms" className="text-blue-600 hover:text-blue-800">Terms of Service</Link> and <Link to="/privacy" className="text-blue-600 hover:text-blue-800">Privacy Policy</Link> *
                       </label>
                       {errors.agreeToTerms && <p className="mt-1 text-sm text-red-600">{errors.agreeToTerms}</p>}
                     </div>
