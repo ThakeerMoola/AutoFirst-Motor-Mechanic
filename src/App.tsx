@@ -12,7 +12,9 @@ import Contact from './pages/Contact';
 import Cart from './pages/Cart';
 import { CartProvider } from './contexts/CartContext';
 import CheckoutForm from './pages/CheckoutForm';
-import Confirmation from './pages/confirmation'; // ✅ Add this import
+import Confirmation from './pages/confirmation';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancelled from './pages/PaymentCancelled';
 
 function App() {
   return (
@@ -30,7 +32,9 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/checkout" element={<CheckoutForm />} />
-              <Route path="/confirmation" element={<Confirmation />} /> {/* ✅ New route */}
+              <Route path="/confirmation" element={<Confirmation />} />
+              <Route path="/payment-success" element={<PaymentSuccess />} />
+              <Route path="/payment-cancelled" element={<PaymentCancelled />} />
             </Routes>
           </main>
           <Footer />

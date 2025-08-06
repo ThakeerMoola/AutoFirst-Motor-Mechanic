@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import PayFastButton from '../components/PayFastButton';
 
 const CheckoutForm = () => {
   const { items, clearCart, getTotalPrice } = useCart();
@@ -53,14 +54,22 @@ const CheckoutForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      // Here you would typically send the data to your backend
-      console.log('Form submitted:', formData);
-      console.log('Order items:', items);
-      
-      // Clear cart and redirect to confirmation
-      clearCart();
-      navigate('/confirmation');
+      // Form is valid, but don't submit yet - let PayFast button handle payment
+      console.log('Form validated, ready for payment');
     }
+  };
+
+  const handlePaymentInitiated = () => {
+    // Store order data in localStorage for success page
+    localStorage.setItem('orderData', JSON.stringify({
+      customer: formData,
+      items: items,
+      total: getTotalPrice()
+    }));
+  };
+
+  const generateOrderId = () => {
+    return `AF-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   };
 
   return (
@@ -234,8 +243,36 @@ const CheckoutForm = () => {
                   type="submit"
                   className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors"
                 >
-                  Complete Purchase
+                  Validate Information
                 </button>
+                
+                {/* PayFast Payment Button - only show if form is valid */}
+                {Object.keys(errors).length === 0 && formData.firstName && formData.email && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-sm text-gray-600 mb-3 text-center">
+                      Complete your payment securely with PayFast
+                    </p>
+                    <PayFastButton
+                      amount={getTotalPrice()}
+                      customerData={{
+                        firstName: formData.firstName,
+                        lastName: formData.lastName,
+                        email: formData.email
+                      }}
+                      orderData={{
+                        orderId: generateOrderId(),
+                        description: `Auto First Package - ${items.map(item => item.name).join(', ')}`,
+                        items: JSON.stringify(items.map(item => ({
+                          name: item.name,
+                          quantity: item.quantity,
+                          price: item.price
+                        })))
+                      }}
+                      onPaymentInitiated={handlePaymentInitiated}
+                      className="w-full"
+                    />
+                  </div>
+                )}
               </form>
             </div>
 
