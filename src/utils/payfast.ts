@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import { PAYFAST_CONFIG } from '../config/payfast';
 
 export interface PayFastData {
   merchant_id: string;
@@ -21,32 +22,23 @@ export interface PayFastData {
 }
 
 export const generatePayFastSignature = (data: PayFastData, passPhrase?: string): string => {
-  // Create parameter string
+  // Sort keys alphabetically
+  const sortedKeys = Object.keys(data).sort();
   let pfOutput = '';
-  
-  // Sort the array by key, alphabetically
-  const sortedData = Object.keys(data)
-    .sort()
-    .reduce((result: any, key) => {
-      if (data[key as keyof PayFastData] !== '' && data[key as keyof PayFastData] !== undefined) {
-        result[key] = data[key as keyof PayFastData];
-      }
-      return result;
-    }, {});
 
-  // Create parameter string
-  for (const key in sortedData) {
-    if (sortedData.hasOwnProperty(key)) {
-      pfOutput += `${key}=${encodeURIComponent(sortedData[key]).replace(/%20/g, '+')}&`;
+  sortedKeys.forEach((key) => {
+    const value = data[key as keyof PayFastData];
+    if (value !== '' && value !== undefined) {
+      pfOutput += `${key}=${encodeURIComponent(value as string).replace(/%20/g, '+')}&`;
     }
-  }
+  });
 
   // Remove last ampersand
   pfOutput = pfOutput.slice(0, -1);
 
   // Add passphrase if provided
   if (passPhrase) {
-    pfOutput += `&passphrase=${encodeURIComponent(passPhrase)}`;
+    pfOutput += `&passphrase=${encodeURIComponent(passPhrase).replace(/%20/g, '+')}`;
   }
 
   // Generate signature
@@ -54,9 +46,8 @@ export const generatePayFastSignature = (data: PayFastData, passPhrase?: string)
 };
 
 export const createPayFastForm = (data: PayFastData, signature: string): string => {
-  const isSandbox = process.env.NODE_ENV !== 'production';
-  const payFastUrl = isSandbox 
-    ? 'https://sandbox.payfast.co.za/eng/process' 
+  const payFastUrl = PAYFAST_CONFIG.IS_SANDBOX
+    ? 'https://sandbox.payfast.co.za/eng/process'
     : 'https://www.payfast.co.za/eng/process';
 
   let formHtml = `<form action="${payFastUrl}" method="post" id="payfast-form">`;

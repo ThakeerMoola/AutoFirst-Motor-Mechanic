@@ -1,9 +1,9 @@
 // PayFast Configuration
 export const PAYFAST_CONFIG = {
   // Replace these with your actual PayFast credentials
-  MERCHANT_ID: import.meta.env.VITE_PAYFAST_MERCHANT_ID || 'your_merchant_id_here',
-  MERCHANT_KEY: import.meta.env.VITE_PAYFAST_MERCHANT_KEY || 'your_merchant_key_here',
-  PASSPHRASE: import.meta.env.VITE_PAYFAST_PASSPHRASE || '', // Optional but recommended
+  MERCHANT_ID: '25197615', // <-- your real merchant ID
+  MERCHANT_KEY: 'k4lgklgzt329m', // <-- your real merchant key
+  PASSPHRASE: '20010920ThakeerMoola', // <-- your real passphrase
   
   // URLs - update these to match your domain
   RETURN_URL: `${window.location.origin}/payment-success`,
@@ -11,5 +11,10 @@ export const PAYFAST_CONFIG = {
   NOTIFY_URL: `${window.location.origin}/api/payfast/notify`, // For ITN (Instant Transaction Notification)
   
   // Environment
-  IS_SANDBOX: import.meta.env.MODE !== 'production',
+  IS_SANDBOX: false, // or true for sandbox
 };
+
+console.log('MERCHANT_ID:', PAYFAST_CONFIG.MERCHANT_ID);
+console.log('MERCHANT_KEY:', PAYFAST_CONFIG.MERCHANT_KEY);
+console.log('PASSPHRASE:', PAYFAST_CONFIG.PASSPHRASE);
+console.log('IS_SANDBOX:', PAYFAST_CONFIG.IS_SANDBOX);
